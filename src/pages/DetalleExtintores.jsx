@@ -113,7 +113,7 @@ const contenidosExtintores = {
       },
     ],
 
-    rutaExperiencia: "/ar/pruebas/prueba-hiro.html",
+rutaExperiencia: "/ar/pruebas/prueba-hiro/",
     tituloRA: "Identifica el extintor apropiado mediante RA",
     descripcionRA:
       "La experiencia mostrará diferentes escenarios y ayudará a reconocer qué clasificación de extintor corresponde a cada tipo de fuego.",

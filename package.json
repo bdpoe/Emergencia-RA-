@@ -3,20 +3,20 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
- "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "start": "serve -s dist -l $PORT",
-  "lint": "oxlint",
-  "preview": "vite preview"
-},
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node server.js",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "axios": "^1.18.1",
+    "express": "^5.0.0",
     "lucide-react": "^1.26.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1",
-    "serve": "^14.2.5"
+    "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",
