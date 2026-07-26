@@ -1,406 +1,353 @@
 import { Link, useParams } from "react-router-dom";
 import {
-  ArrowDown,
   ArrowLeft,
-  Ban,
-  Camera,
-  CircleDot,
-  CookingPot,
+  ArrowRight,
+  Building2,
+  CheckCircle2,
+  Clock3,
   DoorOpen,
-  Factory,
-  FireExtinguisher,
-  Flame,
-  Gauge,
-  Hand,
-  ListChecks,
-  MoveHorizontal,
-  PhoneCall,
-  PlugZap,
-  ScanLine,
+  Footprints,
+  Map,
+  MapPin,
+  MoveRight,
+  Navigation,
+  Route,
   ShieldCheck,
-  Tags,
+  Signpost,
   TriangleAlert,
-  Wind,
+  Users,
 } from "lucide-react";
 
-const contenidosExtintores = {
-  tipos: {
-    etiqueta: "Clasificación de extintores",
-    titulo: "Tipos de Extintores",
-    iconoPrincipal: Tags,
+const contenidosEvacuacion = {
+  plano: {
+    etiqueta: "Reconocimiento del entorno",
+    titulo: "Plano de Evacuación",
+    iconoPrincipal: Map,
 
     introduccion:
-      "Los extintores se seleccionan según el material que está ardiendo. Antes de utilizarlos, se debe revisar la clasificación indicada en su etiqueta.",
+      "El plano de evacuación permite reconocer la ubicación actual, las rutas disponibles, las salidas de emergencia, los equipos de seguridad y los puntos de encuentro.",
 
-    tituloSituaciones: "Clases principales de fuego",
+    tituloSituaciones: "Elementos principales del plano",
 
     situaciones: [
       {
-        titulo: "Clase A",
+        titulo: "Ubicación actual",
         descripcion:
-          "Materiales sólidos comunes como papel, madera, cartón, tela y algunos plásticos.",
-        icono: Flame,
+          "Identifica el punto donde te encuentras mediante la indicación «Usted está aquí».",
+        icono: MapPin,
       },
       {
-        titulo: "Clase B",
+        titulo: "Rutas señalizadas",
         descripcion:
-          "Líquidos inflamables como gasolina, pinturas, disolventes, aceites y combustibles.",
-        icono: CircleDot,
+          "Reconoce las líneas o flechas que muestran el recorrido hacia una salida segura.",
+        icono: Route,
       },
       {
-        titulo: "Clase C",
+        titulo: "Salidas de emergencia",
         descripcion:
-          "Equipos o instalaciones eléctricas energizadas. Se requiere un agente que no conduzca electricidad.",
-        icono: PlugZap,
-      },
-      {
-        titulo: "Clase D",
-        descripcion:
-          "Metales combustibles presentes principalmente en ciertos procesos industriales.",
-        icono: Factory,
-      },
-      {
-        titulo: "Clase K",
-        descripcion:
-          "Aceites y grasas utilizados en cocinas, freidoras y equipos de preparación de alimentos.",
-        icono: CookingPot,
-      },
-    ],
-
-    alertaTitulo: "No utilices cualquier extintor",
-
-    alertaDescripcion:
-      "Un agente inadecuado puede aumentar el riesgo. Revisa siempre la clasificación, instrucciones y pictogramas de la etiqueta.",
-
-    tituloPasos: "Cómo identificar el extintor adecuado",
-
-    pasos: [
-      {
-        numero: 1,
-        titulo: "Identifica el material que arde",
-        descripcion:
-          "Observa qué material inició el fuego sin acercarte innecesariamente ni exponerte al humo.",
-        icono: Flame,
-      },
-      {
-        numero: 2,
-        titulo: "Revisa la etiqueta",
-        descripcion:
-          "Comprueba las letras, pictogramas y tipos de fuego para los cuales fue diseñado el extintor.",
-        icono: Tags,
-      },
-      {
-        numero: 3,
-        titulo: "Verifica su condición",
-        descripcion:
-          "Comprueba que el equipo no presente daños visibles y que el indicador de presión se encuentre en su rango operativo, cuando corresponda.",
-        icono: Gauge,
-      },
-      {
-        numero: 4,
-        titulo: "Mantén disponible una salida",
-        descripcion:
-          "Ubícate de manera que siempre puedas retroceder hacia una ruta de evacuación segura.",
+          "Ubica las puertas destinadas a abandonar el edificio durante una emergencia.",
         icono: DoorOpen,
       },
       {
-        numero: 5,
-        titulo: "No actúes ante un incendio desarrollado",
+        titulo: "Punto de encuentro",
         descripcion:
-          "Si existe demasiado humo, calor o propagación rápida, evacúa y solicita ayuda especializada.",
-        icono: PhoneCall,
+          "Identifica el lugar exterior donde deben reunirse las personas evacuadas.",
+        icono: Users,
       },
     ],
 
-    rutaExperiencia: "/ar/extintores/tipos-extintores.html",
-
-    tituloRA: "Identifica las clases de fuego mediante RA",
-
-    descripcionRA:
-      "Enfoca el marcador Hiro para visualizar un extintor aumentado y consultar las clases A, B, C, D y K.",
-  },
-
-  "tecnica-pass": {
-    etiqueta: "Procedimiento de utilización",
-    titulo: "Técnica PASS",
-    iconoPrincipal: ListChecks,
-
-    introduccion:
-      "PASS es una secuencia sencilla que ayuda a recordar las acciones básicas para utilizar un extintor portátil: retirar el seguro, apuntar, presionar y barrer.",
-
-    tituloSituaciones: "Significado de la técnica PASS",
-
-    situaciones: [
-      {
-        titulo: "P — Pull",
-        descripcion:
-          "Retira el pasador o seguro que impide accionar accidentalmente el extintor.",
-        icono: Hand,
-      },
-      {
-        titulo: "A — Aim",
-        descripcion:
-          "Apunta la boquilla o manguera hacia la base del fuego.",
-        icono: ArrowDown,
-      },
-      {
-        titulo: "S — Squeeze",
-        descripcion:
-          "Presiona la manija para liberar el agente extintor.",
-        icono: FireExtinguisher,
-      },
-      {
-        titulo: "S — Sweep",
-        descripcion:
-          "Realiza un movimiento de barrido de lado a lado cubriendo la base del fuego.",
-        icono: MoveHorizontal,
-      },
-    ],
-
-    alertaTitulo: "Mantén siempre una ruta de salida",
+    alertaTitulo: "Revisa el plano antes de una emergencia",
 
     alertaDescripcion:
-      "No permitas que el fuego quede entre tú y la salida. Si el fuego aumenta o el humo impide ver, abandona el lugar.",
+      "No esperes a que ocurra una emergencia para conocer el recorrido. Observa previamente las rutas principales y alternativas.",
 
-    tituloPasos: "Cómo aplicar la técnica PASS",
+    tituloPasos: "Cómo interpretar un plano de evacuación",
 
     pasos: [
       {
         numero: 1,
-        titulo: "Ubícate de forma segura",
+        titulo: "Localiza tu posición",
         descripcion:
-          "Conserva una salida libre detrás de ti antes de intentar controlar el fuego.",
+          "Busca la indicación «Usted está aquí» para determinar desde dónde iniciarías la evacuación.",
+        icono: MapPin,
+      },
+      {
+        numero: 2,
+        titulo: "Identifica la salida más cercana",
+        descripcion:
+          "Observa la ruta señalizada que conduce hacia una salida de emergencia.",
+        icono: DoorOpen,
+      },
+      {
+        numero: 3,
+        titulo: "Reconoce una ruta alternativa",
+        descripcion:
+          "Ubica otro recorrido que puedas utilizar si la salida principal está bloqueada.",
+        icono: Route,
+      },
+      {
+        numero: 4,
+        titulo: "Ubica el punto de encuentro",
+        descripcion:
+          "Identifica el área exterior donde debes permanecer después de evacuar.",
+        icono: Users,
+      },
+    ],
+  },
+
+  salidas: {
+    etiqueta: "Abandono seguro del edificio",
+    titulo: "Salidas de Emergencia",
+    iconoPrincipal: DoorOpen,
+
+    introduccion:
+      "Las salidas de emergencia permiten abandonar una instalación de forma rápida y ordenada. Deben permanecer identificadas, iluminadas y libres de obstáculos.",
+
+    tituloSituaciones: "Cómo reconocer una salida segura",
+
+    situaciones: [
+      {
+        titulo: "Señalización visible",
+        descripcion:
+          "La salida debe estar identificada mediante señales legibles y ubicadas en lugares visibles.",
+        icono: Signpost,
+      },
+      {
+        titulo: "Acceso despejado",
+        descripcion:
+          "El recorrido hacia la puerta no debe estar bloqueado por muebles, cajas, equipos u otros objetos.",
+        icono: MoveRight,
+      },
+      {
+        titulo: "Apertura disponible",
+        descripcion:
+          "La puerta debe poder abrirse sin necesidad de realizar maniobras complejas durante la evacuación.",
+        icono: DoorOpen,
+      },
+      {
+        titulo: "Iluminación de emergencia",
+        descripcion:
+          "La salida y el recorrido deben poder identificarse incluso si se interrumpe la energía eléctrica.",
+        icono: ShieldCheck,
+      },
+    ],
+
+    alertaTitulo: "No utilices una salida bloqueada",
+
+    alertaDescripcion:
+      "Si una salida presenta humo, fuego, daños estructurales o algún bloqueo, utiliza inmediatamente una ruta alternativa segura.",
+
+    tituloPasos: "Cómo actuar al dirigirte hacia una salida",
+
+    pasos: [
+      {
+        numero: 1,
+        titulo: "Mantén la calma",
+        descripcion:
+          "Escucha las indicaciones y evita correr, gritar o empujar a otras personas.",
         icono: ShieldCheck,
       },
       {
         numero: 2,
-        titulo: "Retira el seguro",
+        titulo: "Sigue las señales",
         descripcion:
-          "Extrae completamente el pasador de seguridad.",
-        icono: Hand,
+          "Desplázate siguiendo las flechas, luces y señales de evacuación.",
+        icono: Signpost,
       },
       {
         numero: 3,
-        titulo: "Apunta hacia la base",
+        titulo: "Avanza de manera ordenada",
         descripcion:
-          "Dirige la boquilla al lugar donde se origina el fuego.",
-        icono: ArrowDown,
+          "Camina con rapidez controlada y conserva una distancia segura respecto de otras personas.",
+        icono: Footprints,
       },
       {
         numero: 4,
-        titulo: "Presiona la manija",
+        titulo: "Comprueba la salida",
         descripcion:
-          "Acciona la manija para iniciar la descarga.",
-        icono: FireExtinguisher,
+          "Antes de atravesarla, verifica que no exista humo intenso, fuego u otro peligro inmediato.",
+        icono: CheckCircle2,
       },
       {
         numero: 5,
-        titulo: "Realiza el barrido",
+        titulo: "No regreses al edificio",
         descripcion:
-          "Mueve la descarga de lado a lado sobre la base del fuego.",
-        icono: MoveHorizontal,
+          "Una vez afuera, dirígete al punto de encuentro y espera las indicaciones del personal responsable.",
+        icono: Users,
       },
     ],
-
-    experienciaId: "extintores-pass",
-
-    tituloRA: "Practica la técnica PASS mediante RA",
-
-    descripcionRA:
-      "La experiencia mostrará la secuencia de retirar, apuntar, presionar y barrer.",
   },
 
-  distancia: {
-    etiqueta: "Posición y distancia segura",
-    titulo: "Distancia Recomendada",
-    iconoPrincipal: MoveHorizontal,
+  "punto-encuentro": {
+    etiqueta: "Reunión posterior a la evacuación",
+    titulo: "Punto de Encuentro",
+    iconoPrincipal: Users,
 
     introduccion:
-      "La distancia de operación depende del tipo, capacidad y diseño del extintor. Debe respetarse la información indicada por el fabricante.",
+      "El punto de encuentro es un área segura ubicada fuera de la instalación. Allí se verifica que las personas hayan evacuado y se reciben nuevas instrucciones.",
 
-    tituloSituaciones: "Factores que modifican la distancia",
+    tituloSituaciones: "Características del punto de encuentro",
 
     situaciones: [
       {
-        titulo: "Tipo de extintor",
+        titulo: "Ubicación exterior",
         descripcion:
-          "El alcance cambia según el agente extintor utilizado.",
-        icono: FireExtinguisher,
+          "Debe encontrarse fuera del edificio y alejado del peligro inmediato.",
+        icono: Building2,
       },
       {
-        titulo: "Tamaño y capacidad",
+        titulo: "Área identificada",
         descripcion:
-          "Los equipos pueden tener alcances y tiempos de descarga diferentes.",
-        icono: Gauge,
+          "Debe contar con señalización visible para facilitar su reconocimiento.",
+        icono: MapPin,
       },
       {
-        titulo: "Viento y ventilación",
+        titulo: "Espacio suficiente",
         descripcion:
-          "Las corrientes de aire pueden desviar el agente.",
-        icono: Wind,
+          "Debe permitir la reunión ordenada de las personas evacuadas.",
+        icono: Users,
       },
       {
-        titulo: "Intensidad del fuego",
+        titulo: "Acceso para emergencias",
         descripcion:
-          "El calor puede impedir una aproximación segura.",
-        icono: Flame,
+          "No debe bloquear el ingreso de bomberos, ambulancias ni otros vehículos de respuesta.",
+        icono: Navigation,
       },
     ],
 
-    alertaTitulo: "No existe una distancia universal",
+    alertaTitulo: "No abandones el punto de encuentro",
 
     alertaDescripcion:
-      "Consulta las instrucciones del extintor específico. Si el calor resulta intenso, evacúa.",
+      "Permanece en el área asignada hasta recibir autorización. Alejarte puede dificultar el conteo y provocar que alguien intente buscarte dentro del edificio.",
 
-    tituloPasos: "Cómo mantener una posición segura",
+    tituloPasos: "Qué hacer al llegar al punto de encuentro",
 
     pasos: [
       {
         numero: 1,
-        titulo: "Lee las instrucciones",
+        titulo: "Ubícate en el área indicada",
         descripcion:
-          "Identifica el alcance aproximado indicado por el fabricante.",
-        icono: Tags,
+          "Dirígete directamente al punto asignado sin detenerte cerca de las salidas.",
+        icono: MapPin,
       },
       {
         numero: 2,
-        titulo: "Colócate con la salida detrás",
+        titulo: "Mantén el grupo organizado",
         descripcion:
-          "Mantén disponible una ruta de retroceso.",
-        icono: DoorOpen,
+          "Permanece junto a tu grupo, salón, oficina o área de trabajo.",
+        icono: Users,
       },
       {
         numero: 3,
-        titulo: "Comienza desde una posición segura",
+        titulo: "Participa en el conteo",
         descripcion:
-          "Inicia la descarga sin acercarte directamente a las llamas.",
-        icono: MoveHorizontal,
+          "Responde cuando se verifique la presencia de las personas evacuadas.",
+        icono: CheckCircle2,
       },
       {
         numero: 4,
-        titulo: "Considera la dirección del viento",
+        titulo: "Reporta información importante",
         descripcion:
-          "Evita que el agente y el humo regresen hacia ti.",
-        icono: Wind,
+          "Comunica si observaste a una persona herida, atrapada o ausente.",
+        icono: TriangleAlert,
       },
       {
         numero: 5,
-        titulo: "Retrocede si el fuego aumenta",
+        titulo: "Espera la autorización",
         descripcion:
-          "Interrumpe el intento y evacúa cuando el fuego se intensifique.",
-        icono: TriangleAlert,
+          "No regreses al edificio hasta que el personal responsable confirme que es seguro.",
+        icono: ShieldCheck,
       },
     ],
-
-    experienciaId: "extintores-distancia",
-
-    tituloRA: "Practica la posición segura mediante RA",
-
-    descripcionRA:
-      "La experiencia permitirá visualizar el extintor, el origen del fuego y una zona de operación.",
   },
 
-  recomendaciones: {
-    etiqueta: "Decisión y uso responsable",
-    titulo: "Recomendaciones de Seguridad",
-    iconoPrincipal: ShieldCheck,
+  tiempo: {
+    etiqueta: "Desplazamiento y respuesta",
+    titulo: "Tiempo Estimado de Evacuación",
+    iconoPrincipal: Clock3,
 
     introduccion:
-      "Un extintor portátil se utiliza únicamente cuando el fuego es pequeño, existe una salida disponible y la persona puede actuar sin exponerse.",
+      "El tiempo de evacuación depende de la distancia, la cantidad de personas, las condiciones del recorrido y el tipo de emergencia. La prioridad es evacuar con rapidez, pero sin perder el control.",
 
-    tituloSituaciones: "¿Cuándo no debes intentar apagarlo?",
+    tituloSituaciones: "Factores que influyen en el tiempo",
 
     situaciones: [
       {
-        titulo: "El fuego está creciendo",
+        titulo: "Distancia hasta la salida",
         descripcion:
-          "Las llamas se extienden rápidamente hacia otros materiales.",
-        icono: Flame,
+          "Los recorridos más largos requieren mayor tiempo de desplazamiento.",
+        icono: Route,
       },
       {
-        titulo: "Existe demasiado humo",
+        titulo: "Cantidad de personas",
         descripcion:
-          "La visibilidad disminuye o respirar se vuelve difícil.",
-        icono: Wind,
+          "La concentración de personas puede generar demoras en pasillos, escaleras y puertas.",
+        icono: Users,
       },
       {
-        titulo: "No tienes una salida segura",
+        titulo: "Obstáculos en la ruta",
         descripcion:
-          "El fuego bloquea la ruta de evacuación.",
-        icono: DoorOpen,
-      },
-      {
-        titulo: "No conoces el extintor",
-        descripcion:
-          "No puedes identificar si el equipo es apropiado.",
+          "Los objetos, daños o bloqueos pueden reducir la velocidad de evacuación.",
         icono: TriangleAlert,
+      },
+      {
+        titulo: "Conocimiento del recorrido",
+        descripcion:
+          "Reconocer previamente las salidas y rutas alternativas facilita una evacuación más rápida.",
+        icono: Map,
       },
     ],
 
-    alertaTitulo: "La prioridad siempre es evacuar",
+    alertaTitulo: "Rapidez no significa correr",
 
     alertaDescripcion:
-      "No arriesgues tu vida intentando controlar un incendio. Activa la alarma y solicita ayuda.",
+      "Correr, empujar o adelantar de forma desordenada puede provocar caídas y bloquear la evacuación de otras personas.",
 
-    tituloPasos: "Verificación antes de utilizarlo",
+    tituloPasos: "Cómo reducir el tiempo de evacuación",
 
     pasos: [
       {
         numero: 1,
-        titulo: "Activa la alarma",
+        titulo: "Reconoce las rutas previamente",
         descripcion:
-          "Advierte a las personas cercanas.",
-        icono: TriangleAlert,
+          "Identifica las salidas principales y alternativas antes de que ocurra una emergencia.",
+        icono: Map,
       },
       {
         numero: 2,
-        titulo: "Solicita ayuda",
+        titulo: "Responde inmediatamente",
         descripcion:
-          "Comunica el incendio al servicio de emergencia.",
-        icono: PhoneCall,
+          "Inicia la evacuación cuando se active la alarma o se emita la indicación correspondiente.",
+        icono: Clock3,
       },
       {
         numero: 3,
-        titulo: "Evalúa el tamaño del fuego",
+        titulo: "Evita recoger objetos",
         descripcion:
-          "Solo utiliza el extintor si el fuego es pequeño y localizado.",
-        icono: Flame,
+          "No retrases la evacuación intentando recuperar mochilas, equipos u otras pertenencias.",
+        icono: ArrowRight,
       },
       {
         numero: 4,
-        titulo: "Selecciona el equipo correcto",
+        titulo: "Mantén un desplazamiento continuo",
         descripcion:
-          "Verifica la clasificación del extintor.",
-        icono: Tags,
+          "Avanza sin detenerte innecesariamente y evita bloquear puertas o pasillos.",
+        icono: Footprints,
       },
       {
         numero: 5,
-        titulo: "Mantén una salida libre",
+        titulo: "Participa en los simulacros",
         descripcion:
-          "Evita quedar atrapado entre el fuego y la salida.",
-        icono: DoorOpen,
-      },
-      {
-        numero: 6,
-        titulo: "Evacúa si no se controla",
-        descripcion:
-          "Si el fuego continúa, abandona el lugar.",
-        icono: Ban,
+          "Los simulacros permiten conocer el recorrido y mejorar la coordinación del grupo.",
+        icono: ShieldCheck,
       },
     ],
-
-    experienciaId: "extintores-seguridad",
-
-    tituloRA: "Recibe recomendaciones mediante RA",
-
-    descripcionRA:
-      "La experiencia mostrará un brigadista o bombero virtual con recomendaciones de seguridad.",
   },
 };
 
-function DetalleExtintores() {
+function DetalleEvacuacion() {
   const { temaId } = useParams();
-  const contenido = contenidosExtintores[temaId];
+  const contenido = contenidosEvacuacion[temaId];
 
   if (!contenido) {
     return (
@@ -409,10 +356,10 @@ function DetalleExtintores() {
 
         <h1>Contenido no encontrado</h1>
 
-        <p>El tema solicitado todavía no está disponible.</p>
+        <p>El tema de evacuación solicitado todavía no está disponible.</p>
 
-        <Link to="/extintores">
-          Regresar al módulo de Extintores
+        <Link to="/rutas-evacuacion">
+          Regresar al módulo de Rutas de Evacuación
         </Link>
       </main>
     );
@@ -420,18 +367,14 @@ function DetalleExtintores() {
 
   const IconoPrincipal = contenido.iconoPrincipal;
 
-  const rutaExperiencia =
-    contenido.rutaExperiencia ??
-    `/experiencia-ra/${contenido.experienciaId}`;
-
   return (
-    <main className="detalle-procedimiento detalle-procedimiento--extintores">
+    <main className="detalle-procedimiento detalle-procedimiento--evacuacion">
       <Link
         className="detalle-procedimiento__volver"
-        to="/extintores"
+        to="/rutas-evacuacion"
       >
         <ArrowLeft size={19} aria-hidden="true" />
-        Volver a Uso de Extintores
+        Volver a Rutas de Evacuación
       </Link>
 
       <header className="detalle-procedimiento__encabezado">
@@ -447,18 +390,6 @@ function DetalleExtintores() {
 
             <h1>{contenido.titulo}</h1>
           </div>
-
-          <a
-            className="detalle-procedimiento__boton-ra-superior"
-            href={rutaExperiencia}
-          >
-            <Camera size={20} aria-hidden="true" />
-
-            <span>
-              <small>Experiencia interactiva</small>
-              Iniciar experiencia RA
-            </span>
-          </a>
         </div>
 
         <p className="detalle-procedimiento__introduccion">
@@ -536,31 +467,8 @@ function DetalleExtintores() {
           })}
         </div>
       </section>
-
-      <section className="bloque-ra bloque-ra--destacado">
-        <div className="bloque-ra__icono">
-          <ScanLine size={34} aria-hidden="true" />
-        </div>
-
-        <div className="bloque-ra__contenido">
-          <p className="bloque-ra__etiqueta">
-            Experiencia de Realidad Aumentada
-          </p>
-
-          <h2>{contenido.tituloRA}</h2>
-          <p>{contenido.descripcionRA}</p>
-        </div>
-
-        <a
-          className="bloque-ra__boton"
-          href={rutaExperiencia}
-        >
-          <Camera size={20} aria-hidden="true" />
-          Iniciar experiencia RA
-        </a>
-      </section>
     </main>
   );
 }
 
-export default DetalleExtintores;
+export default DetalleEvacuacion;
