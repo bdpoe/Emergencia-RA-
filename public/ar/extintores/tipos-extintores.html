@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+
+    <title>Prueba AR — Marcador Hiro</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+    <!-- AR.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@ar-js-org/ar.js@3.4.7/aframe/build/aframe-ar.min.js"></script>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family:
+          Arial, Helvetica, system-ui, sans-serif;
+        background-color: #000000;
+      }
+
+      /* =====================================================
+         INTERFAZ
+      ===================================================== */
+
+      .interfaz {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        pointer-events: none;
+      }
+
+      .barra-superior {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .estado {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 14px;
+        color: #ffffff;
+        font-size: 0.84rem;
+        font-weight: 800;
+        border: 1px solid #facc15;
+        border-radius: 13px;
+        background-color: rgba(2, 6, 23, 0.88);
+        backdrop-filter: blur(10px);
+        transition:
+          border-color 0.2s ease,
+          background-color 0.2s ease;
+      }
+
+      .estado__punto {
+        width: 10px;
+        height: 10px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background-color: #facc15;
+        box-shadow: 0 0 14px rgba(250, 204, 21, 0.9);
+      }
+
+      .estado--detectado {
+        border-color: #4ade80;
+        background-color: rgba(20, 83, 45, 0.9);
+      }
+
+      .estado--detectado .estado__punto {
+        background-color: #4ade80;
+        box-shadow: 0 0 14px rgba(74, 222, 128, 0.9);
+      }
+
+      .boton-salir {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 15px;
+        color: #ffffff;
+        font-size: 0.82rem;
+        font-weight: 800;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 12px;
+        background-color: rgba(15, 23, 42, 0.92);
+        pointer-events: auto;
+      }
+
+      /* =====================================================
+         MARCO PARA ENFOCAR HIRO
+      ===================================================== */
+
+      .guia {
+        position: absolute;
+        top: 47%;
+        left: 50%;
+        display: flex;
+        width: min(62vw, 320px);
+        flex-direction: column;
+        align-items: center;
+        gap: 13px;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      .guia--detectada {
+        opacity: 0.12;
+        transform: translate(-50%, -50%) scale(1.04);
+      }
+
+      .guia__cuadro {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1;
+        border: 2px solid rgba(251, 146, 60, 0.6);
+        border-radius: 22px;
+      }
+
+      .esquina {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border-color: #fb923c;
+        border-style: solid;
+      }
+
+      .esquina--1 {
+        top: -3px;
+        left: -3px;
+        border-width: 4px 0 0 4px;
+        border-radius: 21px 0 0;
+      }
+
+      .esquina--2 {
+        top: -3px;
+        right: -3px;
+        border-width: 4px 4px 0 0;
+        border-radius: 0 21px 0 0;
+      }
+
+      .esquina--3 {
+        bottom: -3px;
+        left: -3px;
+        border-width: 0 0 4px 4px;
+        border-radius: 0 0 0 21px;
+      }
+
+      .esquina--4 {
+        right: -3px;
+        bottom: -3px;
+        border-width: 0 4px 4px 0;
+        border-radius: 0 0 21px;
+      }
+
+      .guia__centro {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 34px;
+        height: 25px;
+        border: 4px dashed #fb923c;
+        border-radius: 7px;
+        transform: translate(-50%, -50%);
+      }
+
+      .guia__mensaje {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 10px 15px;
+        text-align: center;
+        border: 1px solid rgba(251, 146, 60, 0.55);
+        border-radius: 12px;
+        background-color: rgba(2, 6, 23, 0.88);
+        backdrop-filter: blur(10px);
+      }
+
+      .guia__mensaje strong {
+        color: #fb923c;
+        font-size: 0.86rem;
+      }
+
+      .guia__mensaje span {
+        color: #cbd5e1;
+        font-size: 0.72rem;
+      }
+
+      /* =====================================================
+         PANEL INFERIOR
+      ===================================================== */
+
+      .panel-inferior {
+        width: min(calc(100% - 28px), 560px);
+        margin: 0 auto 16px;
+        padding: 15px;
+        color: #ffffff;
+        text-align: center;
+        border: 1px solid rgba(56, 189, 248, 0.5);
+        border-radius: 16px;
+        background-color: rgba(2, 6, 23, 0.88);
+        backdrop-filter: blur(10px);
+      }
+
+      .panel-inferior strong {
+        display: block;
+        margin-bottom: 7px;
+        color: #38bdf8;
+        font-size: 0.94rem;
+      }
+
+      .panel-inferior p {
+        margin: 0;
+        color: #cbd5e1;
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
+
+      .indicadores {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 11px;
+      }
+
+      .indicador {
+        padding: 7px 10px;
+        color: #cbd5e1;
+        font-size: 0.72rem;
+        font-weight: 700;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        border-radius: 999px;
+        background-color: rgba(15, 23, 42, 0.9);
+      }
+
+      .indicador--azul {
+        color: #7dd3fc;
+        border-color: rgba(56, 189, 248, 0.55);
+      }
+
+      .indicador--naranja {
+        color: #fdba74;
+        border-color: rgba(251, 146, 60, 0.55);
+      }
+
+      /* =====================================================
+         PANTALLA DE CARGA
+      ===================================================== */
+
+      .cargando {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        color: #ffffff;
+        text-align: center;
+        background-color: #020617;
+      }
+
+      .cargando--oculto {
+        display: none;
+      }
+
+      .cargando__circulo {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 18px;
+        border: 5px solid rgba(56, 189, 248, 0.2);
+        border-top-color: #38bdf8;
+        border-radius: 50%;
+        animation: girar 1s linear infinite;
+      }
+
+      .cargando h2 {
+        margin: 0 0 10px;
+      }
+
+      .cargando p {
+        margin: 0;
+        color: #94a3b8;
+        line-height: 1.5;
+      }
+
+      @keyframes girar {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 700px) {
+        .barra-superior {
+          padding: 12px;
+        }
+
+        .estado {
+          font-size: 0.75rem;
+        }
+
+        .guia {
+          top: 42%;
+          width: min(70vw, 290px);
+        }
+
+        .panel-inferior {
+          margin-bottom: 12px;
+          padding: 13px;
+        }
+      }
+
+      @media (max-height: 700px) {
+        .guia {
+          top: 38%;
+          width: min(44vh, 250px);
+        }
+
+        .panel-inferior {
+          padding: 10px 13px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Pantalla inicial -->
+
+    <div id="cargando" class="cargando">
+      <div>
+        <div class="cargando__circulo"></div>
+
+        <h2>Inicializando la cámara...</h2>
+
+        <p>
+          Preparando la prueba de renderizado y reconocimiento Hiro.
+        </p>
+      </div>
+    </div>
+
+    <!-- Interfaz -->
+
+    <div class="interfaz">
+      <div class="barra-superior">
+        <div id="estado" class="estado">
+          <span class="estado__punto"></span>
+          <span id="textoEstado">Buscando marcador Hiro...</span>
+        </div>
+
+        <a class="boton-salir" href="/extintores/tipos">
+          Salir
+        </a>
+      </div>
+
+      <div id="guia" class="guia">
+        <div class="guia__cuadro">
+          <span class="esquina esquina--1"></span>
+          <span class="esquina esquina--2"></span>
+          <span class="esquina esquina--3"></span>
+          <span class="esquina esquina--4"></span>
+
+          <div class="guia__centro"></div>
+        </div>
+
+        <div class="guia__mensaje">
+          <strong id="mensajeGuia">
+            Enfoca el marcador Hiro
+          </strong>
+
+          <span>
+            Mantén todo el marcador dentro del cuadro
+          </span>
+        </div>
+      </div>
+
+      <div class="panel-inferior">
+        <strong>Prueba 3: renderizado y reconocimiento</strong>
+
+        <p id="resultado">
+          El cubo azul debe estar siempre visible. El cubo naranja debe
+          aparecer solamente cuando el marcador Hiro sea detectado.
+        </p>
+
+        <div class="indicadores">
+          <span class="indicador indicador--azul">
+            Azul: renderizado 3D
+          </span>
+
+          <span class="indicador indicador--naranja">
+            Naranja: marcador Hiro
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Escena AR -->
+
+    <a-scene
+      embedded
+      vr-mode-ui="enabled: false"
+      loading-screen="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      renderer="
+        antialias: true;
+        alpha: true;
+        precision: medium;
+      "
+      arjs="
+        sourceType: webcam;
+        videoTexture: true;
+        debugUIEnabled: false;
+        detectionMode: mono;
+        trackingMethod: best;
+      "
+    >
+      <!-- Marcador Hiro -->
+
+<a-marker
+  id="marcadorHiro"
+  type="pattern"
+  url="/ar/markers/hiro-personalizado.patt"
+  emitevents="true"
+
+        smooth="true"
+        smooth-count="5"
+        smooth-tolerance="0.01"
+        smooth-threshold="2"
+      >
+        <!-- Cubo naranja: solo aparece con Hiro -->
+
+        <a-box
+          id="cuboHiro"
+          position="0 0.5 0"
+          width="1"
+          height="1"
+          depth="1"
+          material="
+            color: #fb923c;
+            opacity: 1;
+            metalness: 0.1;
+            roughness: 0.45;
+          "
+          animation="
+            property: rotation;
+            from: 0 0 0;
+            to: 0 360 0;
+            loop: true;
+            dur: 3000;
+            easing: linear;
+          "
+        ></a-box>
+
+        <a-plane
+          position="0 0.01 0"
+          rotation="-90 0 0"
+          width="1.5"
+          height="1.5"
+          material="
+            color: #ffffff;
+            opacity: 0.22;
+            transparent: true;
+            side: double;
+          "
+        ></a-plane>
+
+        <a-text
+          value="HIRO DETECTADO"
+          position="0 1.25 0"
+          rotation="-90 0 0"
+          align="center"
+          color="#ffffff"
+          width="4"
+          side="double"
+        ></a-text>
+      </a-marker>
+
+      <!-- Cámara y cubo azul permanente -->
+
+      <a-entity
+        id="camaraPrincipal"
+        camera
+        position="0 0 0"
+      >
+        <a-box
+          id="cuboDiagnostico"
+          position="-0.85 0 -3"
+          width="0.7"
+          height="0.7"
+          depth="0.7"
+          material="
+            color: #38bdf8;
+            opacity: 0.92;
+            metalness: 0.15;
+            roughness: 0.45;
+          "
+          animation="
+            property: rotation;
+            from: 0 0 0;
+            to: 360 360 0;
+            loop: true;
+            dur: 4000;
+            easing: linear;
+          "
+        ></a-box>
+
+        <a-text
+          value="RENDER 3D"
+          position="-0.85 -0.65 -3"
+          align="center"
+          color="#ffffff"
+          width="3"
+        ></a-text>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      const escena =
+        document.querySelector("a-scene");
+
+      const marcador =
+        document.getElementById("marcadorHiro");
+
+      const estado =
+        document.getElementById("estado");
+
+      const textoEstado =
+        document.getElementById("textoEstado");
+
+      const guia =
+        document.getElementById("guia");
+
+      const mensajeGuia =
+        document.getElementById("mensajeGuia");
+
+      const resultado =
+        document.getElementById("resultado");
+
+      const pantallaCarga =
+        document.getElementById("cargando");
+
+      marcador.addEventListener("markerFound", () => {
+        estado.classList.add("estado--detectado");
+
+        textoEstado.textContent =
+          "Marcador Hiro detectado";
+
+        guia.classList.add("guia--detectada");
+
+        mensajeGuia.textContent =
+          "Marcador detectado";
+
+        resultado.textContent =
+          "Detección correcta: debe aparecer el cubo naranja unido al marcador.";
+      });
+
+      marcador.addEventListener("markerLost", () => {
+        estado.classList.remove("estado--detectado");
+
+        textoEstado.textContent =
+          "Buscando marcador Hiro...";
+
+        guia.classList.remove("guia--detectada");
+
+        mensajeGuia.textContent =
+          "Enfoca el marcador Hiro";
+
+        resultado.textContent =
+          "El cubo azul confirma el renderizado. Enfoca Hiro para mostrar el cubo naranja.";
+      });
+
+      escena.addEventListener("loaded", () => {
+        window.setTimeout(() => {
+          pantallaCarga.classList.add("cargando--oculto");
+
+          resultado.textContent =
+            "El cubo azul confirma el renderizado. Enfoca Hiro para mostrar el cubo naranja.";
+        }, 1200);
+      });
+
+      window.addEventListener("arjs-video-loaded", () => {
+        textoEstado.textContent =
+          "Cámara activa — buscando Hiro...";
+      });
+
+ window.addEventListener("error", (evento) => {
+  console.warn(
+    "Aviso detectado durante la experiencia:",
+    evento.message || evento.error
+  );
+});
+    </script>
+  </body>
+</html>
