@@ -404,19 +404,30 @@ function DetalleExtintores() {
     return (
       <main className="pagina-error">
         <TriangleAlert size={52} aria-hidden="true" />
+
         <h1>Contenido no encontrado</h1>
+
         <p>El tema de extintores solicitado todavía no está disponible.</p>
 
-        <Link to="/extintores">Regresar al módulo de Extintores</Link>
+        <Link to="/extintores">
+          Regresar al módulo de Extintores
+        </Link>
       </main>
     );
   }
 
   const IconoPrincipal = contenido.iconoPrincipal;
 
+  const rutaExperiencia =
+    contenido.rutaExperiencia ??
+    `/experiencia-ra/${contenido.experienciaId}`;
+
   return (
     <main className="detalle-procedimiento detalle-procedimiento--extintores">
-      <Link className="detalle-procedimiento__volver" to="/extintores">
+      <Link
+        className="detalle-procedimiento__volver"
+        to="/extintores"
+      >
         <ArrowLeft size={19} aria-hidden="true" />
         Volver a Uso de Extintores
       </Link>
@@ -437,10 +448,7 @@ function DetalleExtintores() {
 
           <a
             className="detalle-procedimiento__boton-ra-superior"
-            href={
-              contenido.rutaExperiencia ??
-              `/experiencia-ra/${contenido.experienciaId}`
-            }
+            href={rutaExperiencia}
           >
             <Camera size={20} aria-hidden="true" />
 
@@ -467,7 +475,10 @@ function DetalleExtintores() {
             const Icono = situacion.icono;
 
             return (
-              <article className="situacion-tema" key={situacion.titulo}>
+              <article
+                className="situacion-tema"
+                key={situacion.titulo}
+              >
                 <div className="situacion-tema__icono">
                   <Icono size={27} aria-hidden="true" />
                 </div>
@@ -502,8 +513,13 @@ function DetalleExtintores() {
             const Icono = paso.icono;
 
             return (
-              <article className="paso-procedimiento" key={paso.numero}>
-                <div className="paso-procedimiento__numero">{paso.numero}</div>
+              <article
+                className="paso-procedimiento"
+                key={paso.numero}
+              >
+                <div className="paso-procedimiento__numero">
+                  {paso.numero}
+                </div>
 
                 <div className="paso-procedimiento__icono">
                   <Icono size={25} aria-hidden="true" />
@@ -535,10 +551,7 @@ function DetalleExtintores() {
 
         <a
           className="bloque-ra__boton"
-          href={
-            contenido.rutaExperiencia ??
-            `/experiencia-ra/${contenido.experienciaId}`
-          }
+          href={rutaExperiencia}
         >
           <Camera size={20} aria-hidden="true" />
           Iniciar experiencia RA
