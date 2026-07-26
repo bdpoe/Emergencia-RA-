@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Building2,
+  Camera,
   CheckCircle2,
   Clock3,
   DoorOpen,
@@ -12,6 +13,7 @@ import {
   MoveRight,
   Navigation,
   Route,
+  ScanLine,
   ShieldCheck,
   Signpost,
   TriangleAlert,
@@ -93,6 +95,13 @@ const contenidosEvacuacion = {
         icono: Users,
       },
     ],
+
+    experienciaId: "evacuacion-plano",
+
+    tituloRA: "Explora el plano de evacuación mediante RA",
+
+    descripcionRA:
+      "La experiencia permitirá reconocer la ubicación actual, las rutas señalizadas, las salidas de emergencia y el punto de encuentro.",
   },
 
   salidas: {
@@ -176,6 +185,13 @@ const contenidosEvacuacion = {
         icono: Users,
       },
     ],
+
+    experienciaId: "evacuacion-salidas",
+
+    tituloRA: "Reconoce las salidas de emergencia mediante RA",
+
+    descripcionRA:
+      "La experiencia permitirá observar la señalización, el recorrido y las condiciones que debe cumplir una salida de emergencia segura.",
   },
 
   "punto-encuentro": {
@@ -259,6 +275,13 @@ const contenidosEvacuacion = {
         icono: ShieldCheck,
       },
     ],
+
+    experienciaId: "evacuacion-punto-encuentro",
+
+    tituloRA: "Identifica el punto de encuentro mediante RA",
+
+    descripcionRA:
+      "La experiencia mostrará la señalización, ubicación y acciones que deben realizarse al llegar al punto de encuentro.",
   },
 
   tiempo: {
@@ -342,6 +365,13 @@ const contenidosEvacuacion = {
         icono: ShieldCheck,
       },
     ],
+
+    experienciaId: "evacuacion-tiempo",
+
+    tituloRA: "Practica un recorrido de evacuación mediante RA",
+
+    descripcionRA:
+      "La experiencia permitirá observar un recorrido, identificar obstáculos y comprender los factores que influyen en el tiempo de evacuación.",
   },
 };
 
@@ -367,6 +397,10 @@ function DetalleEvacuacion() {
 
   const IconoPrincipal = contenido.iconoPrincipal;
 
+  const rutaExperiencia =
+    contenido.rutaExperiencia ??
+    `/experiencia-ra/${contenido.experienciaId}`;
+
   return (
     <main className="detalle-procedimiento detalle-procedimiento--evacuacion">
       <Link
@@ -390,6 +424,18 @@ function DetalleEvacuacion() {
 
             <h1>{contenido.titulo}</h1>
           </div>
+
+          <Link
+            className="detalle-procedimiento__boton-ra-superior"
+            to={rutaExperiencia}
+          >
+            <Camera size={20} aria-hidden="true" />
+
+            <span>
+              <small>Experiencia interactiva</small>
+              Iniciar experiencia RA
+            </span>
+          </Link>
         </div>
 
         <p className="detalle-procedimiento__introduccion">
@@ -466,6 +512,29 @@ function DetalleEvacuacion() {
             );
           })}
         </div>
+      </section>
+
+      <section className="bloque-ra bloque-ra--destacado">
+        <div className="bloque-ra__icono">
+          <ScanLine size={34} aria-hidden="true" />
+        </div>
+
+        <div className="bloque-ra__contenido">
+          <p className="bloque-ra__etiqueta">
+            Experiencia de Realidad Aumentada
+          </p>
+
+          <h2>{contenido.tituloRA}</h2>
+          <p>{contenido.descripcionRA}</p>
+        </div>
+
+        <Link
+          className="bloque-ra__boton"
+          to={rutaExperiencia}
+        >
+          <Camera size={20} aria-hidden="true" />
+          Iniciar experiencia RA
+        </Link>
       </section>
     </main>
   );
